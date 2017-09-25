@@ -5,11 +5,11 @@ import scala.xml.{Node => XNode, NodeSeq}
 import org.scalajs.sbtplugin.cross.CrossType
 
 val commonSettings = Seq(
-  version := "1.0.0-SNAPSHOT",
+  version := "1.0.0",
   scalaVersion := "2.11.11",
   crossScalaVersions := Seq("2.11.11", "2.12.3"),
   organization := "org.http4s",
-  homepage := Some(new URL("http://parboiled.org")),
+  homepage := Some(new URL("https://github.com/http4s/parboiled2")),
   description := "Fork of parboiled2 for http4s, sans shapeless dependency",
   startYear := Some(2009),
   licenses := Seq("Apache-2.0" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
