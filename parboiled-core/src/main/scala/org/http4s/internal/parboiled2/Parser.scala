@@ -24,8 +24,9 @@ import scala.util.{ Failure, Success, Try }
 import scala.util.control.{ NonFatal, NoStackTrace }
 import org.http4s.internal.parboiled2.support._
 
-private[http4s] abstract class Parser(initialValueStackSize: Int = 16,
-                      maxValueStackSize: Int = 1024) extends RuleDSL {
+private[http4s] abstract class Parser(
+    initialValueStackSize: Int = 16,
+    maxValueStackSize:     Int = 1024) extends RuleDSL {
   import Parser._
 
   require(maxValueStackSize <= 65536, "`maxValueStackSize` > 2^16 is not supported") // due to current snapshot design
@@ -177,7 +178,7 @@ private[http4s] abstract class Parser(initialValueStackSize: Int = 16,
 
     @tailrec
     def phase4_collectRuleTraces(reportedErrorIndex: Int, principalErrorIndex: Int, reportQuiet: Boolean)(
-      phase3: CollectingRuleTraces = new CollectingRuleTraces(reportedErrorIndex, reportQuiet),
+      phase3: CollectingRuleTraces     = new CollectingRuleTraces(reportedErrorIndex, reportQuiet),
       traces: VectorBuilder[RuleTrace] = new VectorBuilder): ParseError = {
 
       def done = {
@@ -595,8 +596,8 @@ private[http4s] object Parser {
   // or -1 if no atomic rule fails with a mismatch at the principal error index
   private class EstablishingReportedErrorIndex(
       private var _principalErrorIndex: Int,
-      var currentAtomicStart: Int = Int.MinValue,
-      var maxAtomicErrorStart: Int = Int.MinValue) extends ErrorAnalysisPhase {
+      var currentAtomicStart:           Int = Int.MinValue,
+      var maxAtomicErrorStart:          Int = Int.MinValue) extends ErrorAnalysisPhase {
     def reportedErrorIndex = if (maxAtomicErrorStart >= 0) maxAtomicErrorStart else _principalErrorIndex
     def applyOffset(offset: Int) = {
       _principalErrorIndex -= offset
@@ -609,8 +610,8 @@ private[http4s] object Parser {
   // in which case we need to report them even though they are marked as "quiet"
   private class DetermineReportQuiet(
       private var _minErrorIndex: Int, // the smallest index at which a mismatch triggers a StartTracingException
-      var inQuiet: Boolean = false // are we currently in a quiet rule?
-      ) extends ErrorAnalysisPhase {
+      var inQuiet:                Boolean = false // are we currently in a quiet rule?
+  ) extends ErrorAnalysisPhase {
     def minErrorIndex = _minErrorIndex
     def applyOffset(offset: Int) = _minErrorIndex -= offset
   }
@@ -618,11 +619,11 @@ private[http4s] object Parser {
   // collect the traces of all mismatches happening at an index >= minErrorIndex (the reported error index)
   // by throwing a StartTracingException which gets turned into a TracingBubbleException by the terminal rule
   private class CollectingRuleTraces(
-      var minErrorIndex: Int, // the smallest index at which a mismatch triggers a StartTracingException
-      val reportQuiet: Boolean, // do we need to trace mismatches from quiet rules?
-      val traceNr: Int = 0, // the zero-based index number of the RuleTrace we are currently building
-      var errorMismatches: Int = 0 // the number of times we have already seen a mismatch at >= minErrorIndex
-      ) extends ErrorAnalysisPhase {
+      var minErrorIndex:   Int, // the smallest index at which a mismatch triggers a StartTracingException
+      val reportQuiet:     Boolean, // do we need to trace mismatches from quiet rules?
+      val traceNr:         Int     = 0, // the zero-based index number of the RuleTrace we are currently building
+      var errorMismatches: Int     = 0 // the number of times we have already seen a mismatch at >= minErrorIndex
+  ) extends ErrorAnalysisPhase {
     def applyOffset(offset: Int) = minErrorIndex -= offset
   }
 }

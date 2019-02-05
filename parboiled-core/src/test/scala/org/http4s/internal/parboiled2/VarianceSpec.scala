@@ -24,68 +24,68 @@ import support._
 class VarianceSpec extends TestParserSpec with TypecheckMatchers {
 
   "The Parsing DSL" should
-  {
+    {
 
-    "honor contravariance on the 1st type param of the `Rule` type" in {
-      // valid example
-      test {
-        abstract class Par extends Parser {
-          def A: Rule2[String, Int] = ???
-          def B: PopRule[Any :: HNil] = ???
-          def C: Rule1[String] = rule { A ~ B }
+      "honor contravariance on the 1st type param of the `Rule` type" in {
+        // valid example
+        test {
+          abstract class Par extends Parser {
+            def A: Rule2[String, Int] = ???
+            def B: PopRule[Any :: HNil] = ???
+            def C: Rule1[String] = rule { A ~ B }
+          }
+          ()
         }
-        ()
+
+        // TODO: fix https://github.com/sirthias/parboiled2/issues/172 and re-enable
+        //       //invalid example 1
+        //      test {
+        //        abstract class Par extends Parser {
+        //          def A: Rule1[Any] = ???
+        //          def B: PopRule[Int :: HNil] = ???
+        //        }
+        //        illTyped("""class P extends Par { def C = rule { A ~ B } }""", "Illegal rule composition")
+        //      }
+
+        // invalid example 2
+        test {
+          abstract class Par extends Parser {
+            def A: Rule2[String, Any] = ???
+            def B: PopRule[Int :: HNil] = ???
+          }
+          typecheck("""class P extends Par { def C = rule { A ~ B } }""") must failWith("Illegal rule composition")
+        }
+
+        // invalid example 3
+        test {
+          abstract class Par extends Parser {
+            def A: Rule1[String] = ???
+            def B: PopRule[Int :: HNil] = ???
+          }
+          typecheck("""class P extends Par { def C = rule { A ~ B } }""") must failWith("Illegal rule composition")
+        }
       }
 
-      // TODO: fix https://github.com/sirthias/parboiled2/issues/172 and re-enable
-//       //invalid example 1
-//      test {
-//        abstract class Par extends Parser {
-//          def A: Rule1[Any] = ???
-//          def B: PopRule[Int :: HNil] = ???
-//        }
-//        illTyped("""class P extends Par { def C = rule { A ~ B } }""", "Illegal rule composition")
-//      }
-
-      // invalid example 2
-      test {
-        abstract class Par extends Parser {
-          def A: Rule2[String, Any] = ???
-          def B: PopRule[Int :: HNil] = ???
+      "honor covariance on the 2nd type param of the `Rule` type" in {
+        // valid example
+        test {
+          abstract class Par extends Parser {
+            def A: Rule0 = ???
+            def B: Rule1[Int] = ???
+            def C: Rule1[Any] = rule { A ~ B }
+          }
         }
-        typecheck("""class P extends Par { def C = rule { A ~ B } }""") must failWith("Illegal rule composition")
-      }
 
-      // invalid example 3
-      test {
-        abstract class Par extends Parser {
-          def A: Rule1[String] = ???
-          def B: PopRule[Int :: HNil] = ???
+        // invalid example
+        test {
+          abstract class Par extends Parser {
+            def A: Rule0 = ???
+            def B: Rule1[Any] = ???
+          }
+          typecheck("""class P extends Par { def C: Rule1[Int] = rule { A ~ B } }""") must failWith("type mismatch;.*")
         }
-        typecheck("""class P extends Par { def C = rule { A ~ B } }""") must failWith("Illegal rule composition")
       }
     }
-
-    "honor covariance on the 2nd type param of the `Rule` type" in {
-      // valid example
-      test {
-        abstract class Par extends Parser {
-          def A: Rule0 = ???
-          def B: Rule1[Int] = ???
-          def C: Rule1[Any] = rule { A ~ B }
-        }
-      }
-
-      // invalid example
-      test {
-        abstract class Par extends Parser {
-          def A: Rule0 = ???
-          def B: Rule1[Any] = ???
-        }
-        typecheck("""class P extends Par { def C: Rule1[Int] = rule { A ~ B } }""") must failWith("type mismatch;.*")
-      }
-    }
-  }
 
   def test[A](x: => A): A = x
 }
