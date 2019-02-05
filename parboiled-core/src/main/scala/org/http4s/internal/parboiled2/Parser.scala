@@ -212,11 +212,9 @@ private[http4s] abstract class Parser(
         scheme.parseError(parseError)
       }
     } catch {
-      case e: Parser.Fail ⇒
-        val pos = Position(cursor, input)
+      case e: Parser.Fail =>        val pos = Position(cursor, input)
         scheme.parseError(ParseError(pos, pos, RuleTrace(Nil, RuleTrace.Fail(e.expected)) :: Nil))
-      case NonFatal(e) ⇒
-        scheme.failure(e)
+      case NonFatal(e) =>        scheme.failure(e)
     } finally {
       phase = null
     }
@@ -281,8 +279,7 @@ private[http4s] abstract class Parser(
   def __enterAtomic(start: Int): Boolean =
     phase match {
       case null ⇒ false
-      case x: EstablishingReportedErrorIndex if x.currentAtomicStart == Int.MinValue ⇒
-        x.currentAtomicStart = start
+      case x: EstablishingReportedErrorIndex if x.currentAtomicStart == Int.MinValue =>        x.currentAtomicStart = start
         true
       case _ ⇒ false
     }
@@ -303,14 +300,12 @@ private[http4s] abstract class Parser(
    */
   def __enterQuiet(): Int =
     phase match {
-      case x: DetermineReportQuiet ⇒
-        if (x.inQuiet) -1
+      case x: DetermineReportQuiet =>        if (x.inQuiet) -1
         else {
           x.inQuiet = true
           0
         }
-      case x: CollectingRuleTraces if !x.reportQuiet ⇒
-        val saved = x.minErrorIndex
+      case x: CollectingRuleTraces if !x.reportQuiet =>        val saved = x.minErrorIndex
         x.minErrorIndex = Int.MaxValue // disables triggering of StartTracingException in __registerMismatch
         saved
       case _ ⇒ -1
@@ -334,14 +329,11 @@ private[http4s] abstract class Parser(
   def __registerMismatch(): Boolean = {
     phase match {
       case null | _: EstablishingPrincipalErrorIndex ⇒ // nothing to do
-      case x: CollectingRuleTraces ⇒
-        if (_cursor >= x.minErrorIndex) {
+      case x: CollectingRuleTraces =>        if (_cursor >= x.minErrorIndex) {
           if (x.errorMismatches == x.traceNr) throw Parser.StartTracingException else x.errorMismatches += 1
         }
-      case x: EstablishingReportedErrorIndex ⇒
-        if (x.currentAtomicStart > x.maxAtomicErrorStart) x.maxAtomicErrorStart = x.currentAtomicStart
-      case x: DetermineReportQuiet ⇒
-        // stop this run early because we just learned that reporting quiet traces is unnecessary
+      case x: EstablishingReportedErrorIndex =>        if (x.currentAtomicStart > x.maxAtomicErrorStart) x.maxAtomicErrorStart = x.currentAtomicStart
+      case x: DetermineReportQuiet =>        // stop this run early because we just learned that reporting quiet traces is unnecessary
         if (_cursor >= x.minErrorIndex & !x.inQuiet) throw UnquietMismatch
     }
     false
@@ -363,8 +355,7 @@ private[http4s] abstract class Parser(
    */
   def __push(value: Any): Boolean = {
     value match {
-      case ()       ⇒
-      case x: HList ⇒ valueStack.pushAll(x)
+      case ()       =>      case x: HList ⇒ valueStack.pushAll(x)
       case x        ⇒ valueStack.push(x)
     }
     true
@@ -393,8 +384,7 @@ private[http4s] abstract class Parser(
       } else {
         try __registerMismatch()
         catch {
-          case Parser.StartTracingException ⇒
-            import RuleTrace._
+          case Parser.StartTracingException =>            import RuleTrace._
             __bubbleUp(NonTerminal(StringMatch(string), -ix) :: Nil, CharMatch(string charAt ix))
         }
       }
@@ -423,8 +413,7 @@ private[http4s] abstract class Parser(
       } else {
         try __registerMismatch()
         catch {
-          case Parser.StartTracingException ⇒
-            import RuleTrace._
+          case Parser.StartTracingException =>            import RuleTrace._
             __bubbleUp(NonTerminal(IgnoreCaseString(string), -ix) :: Nil, IgnoreCaseChar(string charAt ix))
         }
       }
