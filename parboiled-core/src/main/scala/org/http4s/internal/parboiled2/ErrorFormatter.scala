@@ -135,7 +135,7 @@ private[http4s] class ErrorFormatter(
    * Formats what is expected at the error location as a [[List]] of Strings.
    */
   def formatExpectedAsList(error: ParseError): List[String] = {
-    val distinctStrings: Set[String] = error.effectiveTraces.map(formatAsExpected)(collection.breakOut)
+    val distinctStrings = error.effectiveTraces.map(formatAsExpected).distinct
     distinctStrings.toList
   }
 
