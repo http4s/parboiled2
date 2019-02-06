@@ -65,9 +65,11 @@ private[http4s] class ValueStack private[parboiled2] (initialSize: Int, maxSize:
    */
   @tailrec final def pushAll(hlist: HList): Unit =
     hlist match {
-      case support.::(head, tail) =>        push(head)
+      case support.::(head, tail) =>
+        push(head)
         pushAll(tail)
-      case HNil =>    }
+      case HNil =>
+    }
 
   /**
    * Inserts the given value into the stack `down` elements below the current
@@ -80,7 +82,8 @@ private[http4s] class ValueStack private[parboiled2] (initialSize: Int, maxSize:
     math.signum(down) match {
       case -1 ⇒ throw new IllegalArgumentException("`down` must not be negative")
       case 0  ⇒ push(value)
-      case 1 =>        if (down > _size) throw new ValueStackUnderflowException
+      case 1 =>
+        if (down > _size) throw new ValueStackUnderflowException
         val newSize = _size + 1
         ensureSize(newSize)
         val targetIx = _size - down
@@ -110,7 +113,8 @@ private[http4s] class ValueStack private[parboiled2] (initialSize: Int, maxSize:
     math.signum(down) match {
       case -1 ⇒ throw new IllegalArgumentException("`down` must not be negative")
       case 0  ⇒ pop()
-      case 1 =>        if (down >= _size) throw new ValueStackUnderflowException
+      case 1 =>
+        if (down >= _size) throw new ValueStackUnderflowException
         val newSize = _size - 1
         val targetIx = newSize - down
         val result = buffer(targetIx)
@@ -137,8 +141,8 @@ private[http4s] class ValueStack private[parboiled2] (initialSize: Int, maxSize:
     math.signum(down) match {
       case -1 ⇒ throw new IllegalArgumentException("`down` must not be negative")
       case 0  ⇒ peek
-      case 1 =>        if (down >= _size) throw new ValueStackUnderflowException
-        else buffer(_size - down - 1)
+      case 1 => if (down >= _size) throw new ValueStackUnderflowException
+      else buffer(_size - down - 1)
     }
 
   /**

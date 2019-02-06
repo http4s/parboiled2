@@ -100,12 +100,12 @@ private[http4s] object RuleTrace {
         }
       @tailrec def rec(current: List[NonTerminal], namedIx: Int, ix: Int): Int =
         current match {
-          case head :: tail if tracesTail forall hasElem(ix, head) =>            head.key match {
-              case Named(_) ⇒ rec(tail, if (namedIx >= 0) namedIx else ix, ix + 1)
-              case RuleCall ⇒ rec(tail, namedIx, ix + 1) // RuleCall elements allow the name to be carried over
-              case Atomic   ⇒ if (namedIx >= 0) namedIx else ix // Atomic elements always terminate a common prefix
-              case _        ⇒ rec(tail, -1, ix + 1) // otherwise the name chain is broken
-            }
+          case head :: tail if tracesTail forall hasElem(ix, head) => head.key match {
+            case Named(_) ⇒ rec(tail, if (namedIx >= 0) namedIx else ix, ix + 1)
+            case RuleCall ⇒ rec(tail, namedIx, ix + 1) // RuleCall elements allow the name to be carried over
+            case Atomic   ⇒ if (namedIx >= 0) namedIx else ix // Atomic elements always terminate a common prefix
+            case _        ⇒ rec(tail, -1, ix + 1) // otherwise the name chain is broken
+          }
           case _ ⇒ if (namedIx >= 0) namedIx else ix
         }
       rec(traces.head.prefix, namedIx = -1, ix = 0)

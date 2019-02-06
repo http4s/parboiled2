@@ -80,48 +80,48 @@ private[http4s] trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
     }
 
   val opTreePF: PartialFunction[Tree, OpTree] = {
-    case q"$lhs.~[$a, $b]($rhs)($c, $d)"                   ⇒ Sequence(OpTree(lhs), OpTree(rhs))
-    case q"$lhs.~!~[$a, $b]($rhs)($c, $d)"                 ⇒ Cut(OpTree(lhs), OpTree(rhs))
-    case q"$lhs.|[$a, $b]($rhs)"                           ⇒ FirstOf(OpTree(lhs), OpTree(rhs))
-    case q"$a.this.ch($c)"                                 ⇒ CharMatch(c)
-    case q"$a.this.str($s)"                                ⇒ StringMatch(s)
-    case q"$a.this.valueMap[$b]($m)($hl)"                  ⇒ MapMatch(m)
-    case q"$a.this.ignoreCase($t)"                         ⇒ IgnoreCase(t)
-    case q"$a.this.predicate($p)"                          ⇒ CharPredicateMatch(p)
-    case q"$a.this.anyOf($s)"                              ⇒ AnyOf(s)
-    case q"$a.this.noneOf($s)"                             ⇒ NoneOf(s)
-    case q"$a.this.ANY"                                    ⇒ ANY
-    case q"$a.this.optional[$b, $c]($arg)($l)"             ⇒ Optional(OpTree(arg), collector(l))
-    case q"$base.?($l)"                                    ⇒ Optional(OpTree(base), collector(l))
-    case q"$a.this.zeroOrMore[$b, $c]($arg)($l)"           ⇒ ZeroOrMore(OpTree(arg), collector(l))
-    case q"$base.*($l)"                                    ⇒ ZeroOrMore(OpTree(base), collector(l))
-    case q"$base.*($sep)($l)"                              ⇒ ZeroOrMore(OpTree(base), collector(l), Separator(OpTree(sep)))
-    case q"$a.this.oneOrMore[$b, $c]($arg)($l)"            ⇒ OneOrMore(OpTree(arg), collector(l))
-    case q"$base.+($l)"                                    ⇒ OneOrMore(OpTree(base), collector(l))
-    case q"$base.+($sep)($l)"                              ⇒ OneOrMore(OpTree(base), collector(l), Separator(OpTree(sep)))
-    case q"$base.times[$a, $b]($r)($s)"                    ⇒ Times(base, OpTree(r), collector(s))
-    case q"$a.this.&($arg)"                                ⇒ AndPredicate(OpTree(arg))
-    case q"$a.unary_!()"                                   ⇒ NotPredicate(OpTree(a))
-    case q"$a.this.atomic[$b, $c]($arg)"                   ⇒ Atomic(OpTree(arg))
-    case q"$a.this.quiet[$b, $c]($arg)"                    ⇒ Quiet(OpTree(arg))
-    case q"$a.this.test($flag)"                            ⇒ SemanticPredicate(flag)
-    case q"$a.this.capture[$b, $c]($arg)($d)"              ⇒ Capture(OpTree(arg))
+    case q"$lhs.~[$a, $b]($rhs)($c, $d)" ⇒ Sequence(OpTree(lhs), OpTree(rhs))
+    case q"$lhs.~!~[$a, $b]($rhs)($c, $d)" ⇒ Cut(OpTree(lhs), OpTree(rhs))
+    case q"$lhs.|[$a, $b]($rhs)" ⇒ FirstOf(OpTree(lhs), OpTree(rhs))
+    case q"$a.this.ch($c)" ⇒ CharMatch(c)
+    case q"$a.this.str($s)" ⇒ StringMatch(s)
+    case q"$a.this.valueMap[$b]($m)($hl)" ⇒ MapMatch(m)
+    case q"$a.this.ignoreCase($t)" ⇒ IgnoreCase(t)
+    case q"$a.this.predicate($p)" ⇒ CharPredicateMatch(p)
+    case q"$a.this.anyOf($s)" ⇒ AnyOf(s)
+    case q"$a.this.noneOf($s)" ⇒ NoneOf(s)
+    case q"$a.this.ANY" ⇒ ANY
+    case q"$a.this.optional[$b, $c]($arg)($l)" ⇒ Optional(OpTree(arg), collector(l))
+    case q"$base.?($l)" ⇒ Optional(OpTree(base), collector(l))
+    case q"$a.this.zeroOrMore[$b, $c]($arg)($l)" ⇒ ZeroOrMore(OpTree(arg), collector(l))
+    case q"$base.*($l)" ⇒ ZeroOrMore(OpTree(base), collector(l))
+    case q"$base.*($sep)($l)" ⇒ ZeroOrMore(OpTree(base), collector(l), Separator(OpTree(sep)))
+    case q"$a.this.oneOrMore[$b, $c]($arg)($l)" ⇒ OneOrMore(OpTree(arg), collector(l))
+    case q"$base.+($l)" ⇒ OneOrMore(OpTree(base), collector(l))
+    case q"$base.+($sep)($l)" ⇒ OneOrMore(OpTree(base), collector(l), Separator(OpTree(sep)))
+    case q"$base.times[$a, $b]($r)($s)" ⇒ Times(base, OpTree(r), collector(s))
+    case q"$a.this.&($arg)" ⇒ AndPredicate(OpTree(arg))
+    case q"$a.unary_!()" ⇒ NotPredicate(OpTree(a))
+    case q"$a.this.atomic[$b, $c]($arg)" ⇒ Atomic(OpTree(arg))
+    case q"$a.this.quiet[$b, $c]($arg)" ⇒ Quiet(OpTree(arg))
+    case q"$a.this.test($flag)" ⇒ SemanticPredicate(flag)
+    case q"$a.this.capture[$b, $c]($arg)($d)" ⇒ Capture(OpTree(arg))
     case q"$a.this.run[$b]($arg)($c.fromAux[$d, $e]($rr))" ⇒ RunAction(arg, rr)
-    case q"$a.this.push[$b]($arg)($hl)"                    ⇒ PushAction(arg, hl)
-    case q"$a.this.drop[$b]($hl)"                          ⇒ DropAction(hl)
-    case q"$a.this.runSubParser[$b, $c]($f)"               ⇒ RunSubParser(f)
-    case q"$a.this.fail($m)"                               ⇒ Fail(m)
-    case q"$a.this.failX[$b, $c]($m)"                      ⇒ Fail(m)
-    case q"$a.named($name)"                                ⇒ Named(OpTree(a), name)
-    case x @ q"$a.this.str2CharRangeSupport($l).-($r)"     ⇒ CharRange(l, r)
-    case q"$a.this.charAndValue[$t]($b.ArrowAssoc[$t1]($c).->[$t2]($v))($hl)" =>      Sequence(CharMatch(c), PushAction(v, hl))
-    case q"$a.this.stringAndValue[$t]($b.ArrowAssoc[$t1]($s).->[$t2]($v))($hl)" =>      Sequence(StringMatch(s), PushAction(v, hl))
-    case q"$a.this.rule2ActionOperator[$b1, $b2]($r)($o).~>.apply[..$e]($f)($g, support.this.FCapture.apply[$ts])" =>      Sequence(OpTree(r), Action(f, ts))
-    case x @ q"$a.this.rule2WithSeparatedBy[$b1, $b2]($base).separatedBy($sep)" =>      OpTree(base) match {
-        case x: WithSeparator ⇒ x.withSeparator(Separator(OpTree(sep)))
-        case _                ⇒ c.abort(x.pos, "Illegal `separatedBy` base: " + base)
-      }
-    case call @ (Apply(_, _) | Select(_, _) | Ident(_) | TypeApply(_, _)) =>      RuleCall(Right(call), Literal(Constant(callName(call) getOrElse c.abort(call.pos, "Illegal rule call: " + call))))
+    case q"$a.this.push[$b]($arg)($hl)" ⇒ PushAction(arg, hl)
+    case q"$a.this.drop[$b]($hl)" ⇒ DropAction(hl)
+    case q"$a.this.runSubParser[$b, $c]($f)" ⇒ RunSubParser(f)
+    case q"$a.this.fail($m)" ⇒ Fail(m)
+    case q"$a.this.failX[$b, $c]($m)" ⇒ Fail(m)
+    case q"$a.named($name)" ⇒ Named(OpTree(a), name)
+    case x @ q"$a.this.str2CharRangeSupport($l).-($r)" ⇒ CharRange(l, r)
+    case q"$a.this.charAndValue[$t]($b.ArrowAssoc[$t1]($c).->[$t2]($v))($hl)" => Sequence(CharMatch(c), PushAction(v, hl))
+    case q"$a.this.stringAndValue[$t]($b.ArrowAssoc[$t1]($s).->[$t2]($v))($hl)" => Sequence(StringMatch(s), PushAction(v, hl))
+    case q"$a.this.rule2ActionOperator[$b1, $b2]($r)($o).~>.apply[..$e]($f)($g, support.this.FCapture.apply[$ts])" => Sequence(OpTree(r), Action(f, ts))
+    case x @ q"$a.this.rule2WithSeparatedBy[$b1, $b2]($base).separatedBy($sep)" => OpTree(base) match {
+      case x: WithSeparator ⇒ x.withSeparator(Separator(OpTree(sep)))
+      case _                ⇒ c.abort(x.pos, "Illegal `separatedBy` base: " + base)
+    }
+    case call @ (Apply(_, _) | Select(_, _) | Ident(_) | TypeApply(_, _)) => RuleCall(Right(call), Literal(Constant(callName(call) getOrElse c.abort(call.pos, "Illegal rule call: " + call))))
   }
 
   def OpTree(tree: Tree): OpTree =
@@ -139,7 +139,7 @@ private[http4s] trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
     require(ops.size >= 2)
     def ruleTraceNonTerminalKey = reify(RuleTrace.Sequence).tree
     def renderInner(wrapped: Boolean): Tree =
-      ops.map(_.render(wrapped)).reduceLeft((l, r) =>        q"val l = $l; if (l) $r else false") // work-around for https://issues.scala-lang.org/browse/SI-8657"
+      ops.map(_.render(wrapped)).reduceLeft((l, r) => q"val l = $l; if (l) $r else false") // work-around for https://issues.scala-lang.org/browse/SI-8657"
   }
 
   case class Cut(lhs: OpTree, rhs: OpTree) extends DefaultNonTerminalOpTree {
@@ -165,7 +165,7 @@ private[http4s] trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
     def ruleTraceNonTerminalKey = reify(RuleTrace.FirstOf).tree
     def renderInner(wrapped: Boolean): Tree =
       q"""val mark = __saveState; ${
-        ops.map(_.render(wrapped)).reduceLeft((l, r) =>          q"val l = $l; if (!l) { __restoreState(mark); $r } else true // work-around for https://issues.scala-lang.org/browse/SI-8657")
+        ops.map(_.render(wrapped)).reduceLeft((l, r) => q"val l = $l; if (!l) { __restoreState(mark); $r } else true // work-around for https://issues.scala-lang.org/browse/SI-8657")
       }"""
   }
 
@@ -204,9 +204,9 @@ private[http4s] trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
         } else q"true"
 
       stringTree match {
-        case Literal(Constant(s: String)) if s.length <= autoExpandMaxStringLength =>          if (s.isEmpty) q"true" else if (wrapped) unrollWrapped(s) else unrollUnwrapped(s)
-        case _ =>          if (wrapped) q"__matchStringWrapped($stringTree)"
-          else q"__matchString($stringTree)"
+        case Literal(Constant(s: String)) if s.length <= autoExpandMaxStringLength => if (s.isEmpty) q"true" else if (wrapped) unrollWrapped(s) else unrollUnwrapped(s)
+        case _ => if (wrapped) q"__matchStringWrapped($stringTree)"
+        else q"__matchString($stringTree)"
       }
     }
   }
@@ -257,9 +257,9 @@ private[http4s] trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
         } else q"true"
 
       stringTree match {
-        case Literal(Constant(s: String)) if s.length <= autoExpandMaxStringLength =>          if (s.isEmpty) q"true" else if (wrapped) unrollWrapped(s) else unrollUnwrapped(s)
-        case _ =>          if (wrapped) q"__matchIgnoreCaseStringWrapped($stringTree)"
-          else q"__matchIgnoreCaseString($stringTree)"
+        case Literal(Constant(s: String)) if s.length <= autoExpandMaxStringLength => if (s.isEmpty) q"true" else if (wrapped) unrollWrapped(s) else unrollUnwrapped(s)
+        case _ => if (wrapped) q"__matchIgnoreCaseStringWrapped($stringTree)"
+        else q"__matchIgnoreCaseString($stringTree)"
       }
     }
   }
@@ -369,27 +369,29 @@ private[http4s] trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
   def Times(base: Tree, rule: OpTree, collector: Collector, separator: Separator = null): OpTree =
     base match {
       case q"$a.this.int2NTimes($n)" ⇒ n match {
-        case Literal(Constant(i: Int)) =>          if (i <= 0) c.abort(base.pos, "`x` in `x.times` must be positive")
-          else if (i == 1) rule
-          else Times(rule, q"val min, max = $n", collector, separator)
+        case Literal(Constant(i: Int)) => if (i <= 0) c.abort(base.pos, "`x` in `x.times` must be positive")
+        else if (i == 1) rule
+        else Times(rule, q"val min, max = $n", collector, separator)
         case x @ (Ident(_) | Select(_, _)) ⇒ Times(rule, q"val min = $n; val max = min", collector, separator)
         case _                             ⇒ c.abort(n.pos, "Invalid int base expression for `.times(...)`: " + n)
       }
       case q"$a.this.range2NTimes($r)" ⇒ r match {
-        case q"${ _ }.Predef.intWrapper($mn).to($mx)" =>          mn match {
+        case q"${ _ }.Predef.intWrapper($mn).to($mx)" =>
+          mn match {
             case Literal(Constant(min: Int)) ⇒ if (min <= 0) c.abort(mn.pos, "`min` in `(min to max).times` must be positive")
-            case (Ident(_) | Select(_, _))   =>            case _                           ⇒ c.abort(r.pos, "Invalid int range expression for `min` in `.times(...)`: " + r)
+            case (Ident(_) | Select(_, _))   => case _ ⇒ c.abort(r.pos, "Invalid int range expression for `min` in `.times(...)`: " + r)
           }
           mx match {
             case Literal(Constant(max: Int)) ⇒ if (max <= 0) c.abort(mx.pos, "`max` in `(min to max).times` must be positive")
-            case (Ident(_) | Select(_, _))   =>            case _                           ⇒ c.abort(r.pos, "Invalid int range expression for `max` in `.times(...)`: " + r)
+            case (Ident(_) | Select(_, _))   => case _ ⇒ c.abort(r.pos, "Invalid int range expression for `max` in `.times(...)`: " + r)
           }
           (mn, mx) match {
-            case (Literal(Constant(min: Int)), Literal(Constant(max: Int))) =>              if (max < min) c.abort(mx.pos, "`max` in `(min to max).times` must be >= `min`")
-            case _ =>          }
+            case (Literal(Constant(min: Int)), Literal(Constant(max: Int))) => if (max < min) c.abort(mx.pos, "`max` in `(min to max).times` must be >= `min`")
+            case _ =>
+          }
           Times(rule, q"val min = $mn; val max = $mx", collector, separator)
-        case x @ (Ident(_) | Select(_, _)) =>          Times(rule, q"val r = $r; val min = r.start; val max = r.end", collector, separator)
-        case _ ⇒ c.abort(r.pos, "Invalid range base expression for `.times(...)`: " + r)
+        case x @ (Ident(_) | Select(_, _)) => Times(rule, q"val r = $r; val min = r.start; val max = r.end", collector, separator)
+        case _                             ⇒ c.abort(r.pos, "Invalid range base expression for `.times(...)`: " + r)
       }
       case _ ⇒ c.abort(base.pos, "Invalid base expression for `.times(...)`: " + base)
     }
@@ -509,7 +511,8 @@ private[http4s] trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
           tree match {
             case Block(statements, res) ⇒ block(statements, actionBody(res))
 
-            case q"(..$args ⇒ $body)" =>              def rewrite(tree: Tree): Tree =
+            case q"(..$args ⇒ $body)" =>
+              def rewrite(tree: Tree): Tree =
                 tree match {
                   case Block(statements, res) ⇒ block(statements, rewrite(res))
                   case x if isSubClass(resultTypeTree.tpe, "org.http4s.internal.parboiled2.Rule") ⇒ expand(x, wrapped)
@@ -525,17 +528,17 @@ private[http4s] trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
       }
 
       rrTree match {
-        case q"RunResult.this.Aux.forAny[$t]"                                   ⇒ block(argTree, q"true")
+        case q"RunResult.this.Aux.forAny[$t]" ⇒ block(argTree, q"true")
 
-        case q"RunResult.this.Aux.forRule[$t]"                                  ⇒ expand(argTree, wrapped)
+        case q"RunResult.this.Aux.forRule[$t]" ⇒ expand(argTree, wrapped)
 
-        case q"RunResult.this.Aux.forF1[$z, $r, $in, $out]($a)"                 ⇒ renderFunctionAction(r, z)
-        case q"RunResult.this.Aux.forF2[$y, $z, $r, $in, $out]($a)"             ⇒ renderFunctionAction(r, y, z)
-        case q"RunResult.this.Aux.forF3[$x, $y, $z, $r, $in, $out]($a)"         ⇒ renderFunctionAction(r, x, y, z)
-        case q"RunResult.this.Aux.forF4[$w, $x, $y, $z, $r, $in, $out]($a)"     ⇒ renderFunctionAction(r, w, x, y, z)
+        case q"RunResult.this.Aux.forF1[$z, $r, $in, $out]($a)" ⇒ renderFunctionAction(r, z)
+        case q"RunResult.this.Aux.forF2[$y, $z, $r, $in, $out]($a)" ⇒ renderFunctionAction(r, y, z)
+        case q"RunResult.this.Aux.forF3[$x, $y, $z, $r, $in, $out]($a)" ⇒ renderFunctionAction(r, x, y, z)
+        case q"RunResult.this.Aux.forF4[$w, $x, $y, $z, $r, $in, $out]($a)" ⇒ renderFunctionAction(r, w, x, y, z)
         case q"RunResult.this.Aux.forF5[$v, $w, $x, $y, $z, $r, $in, $out]($a)" ⇒ renderFunctionAction(r, v, w, x, y, z)
 
-        case q"RunResult.this.Aux.forFHList[$il, $r, $in, $out]($a)" =>          c.abort(argTree.pos, "`run` with a function taking an HList is not yet implemented") // TODO: implement
+        case q"RunResult.this.Aux.forFHList[$il, $r, $in, $out]($a)" => c.abort(argTree.pos, "`run` with a function taking an HList is not yet implemented") // TODO: implement
 
         case x ⇒ c.abort(rrTree.pos, "Unexpected RunResult.Aux: " + show(x))
       }
@@ -557,7 +560,8 @@ private[http4s] trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
       hlTree match {
         case q"support.this.HListable.fromUnit"       ⇒ q"true"
         case q"support.this.HListable.fromAnyRef[$t]" ⇒ q"valueStack.pop(); true"
-        case q"support.this.HListable.fromHList[$t]" =>          @tailrec def rec(t: Type, result: List[Tree] = Nil): List[Tree] =
+        case q"support.this.HListable.fromHList[$t]" =>
+          @tailrec def rec(t: Type, result: List[Tree] = Nil): List[Tree] =
             t match { // TODO: how can we use type quotes here, e.g. tq"shapeless.HNil"?
               case TypeRef(_, sym, List(_, tail)) if sym == HListConsTypeSymbol ⇒ rec(tail, q"valueStack.pop()" :: result)
               case TypeRef(_, sym, _) if sym == HNilTypeSymbol                  ⇒ result
@@ -621,11 +625,13 @@ private[http4s] trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
         tree match {
           case Block(statements, res) ⇒ block(statements, actionBody(res))
 
-          case x @ (Ident(_) | Select(_, _)) =>            val valNames: List[TermName] = argTypes.indices.map { i ⇒ TermName("value" + i) }.toList
+          case x @ (Ident(_) | Select(_, _)) =>
+            val valNames: List[TermName] = argTypes.indices.map { i ⇒ TermName("value" + i) }.toList
             val args = valNames map Ident.apply
             block(popToVals(valNames), q"__push($x(..$args))")
 
-          case q"(..$args ⇒ $body)" =>            def rewrite(tree: Tree): Tree =
+          case q"(..$args ⇒ $body)" =>
+            def rewrite(tree: Tree): Tree =
               tree match {
                 case Block(statements, res) ⇒ block(statements, rewrite(res))
                 case x if isSubClass(actionType.last, "org.http4s.internal.parboiled2.Rule") ⇒ expand(x, wrapped)

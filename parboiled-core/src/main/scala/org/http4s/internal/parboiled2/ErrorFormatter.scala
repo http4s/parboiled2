@@ -90,10 +90,11 @@ private[http4s] class ErrorFormatter(
     // to advancing the principal error location (PEL). Therefore it might be that their succeeding inner match
     // reaches further than the PEL. In these cases we want to show the complete inner match as "mismatched",
     // not just the piece up to the PEL. This is what this method corrects for.
-    error.effectiveTraces.foldLeft(error.principalPosition.index - error.position.index + 1) { (len, trace) =>      import RuleTrace._
+    error.effectiveTraces.foldLeft(error.principalPosition.index - error.position.index + 1) { (len, trace) =>
+      import RuleTrace._
       trace.terminal match {
-        case NotPredicate(_, x) =>          math.max(trace.prefix.collectFirst { case NonTerminal(Atomic, off) ⇒ off + x } getOrElse x, len)
-        case _ ⇒ len
+        case NotPredicate(_, x) => math.max(trace.prefix.collectFirst { case NonTerminal(Atomic, off) ⇒ off + x } getOrElse x, len)
+        case _                  ⇒ len
       }
     }
 
@@ -203,15 +204,18 @@ private[http4s] class ErrorFormatter(
     @tailrec def rec(remainingPrefix: List[RuleTrace.NonTerminal], names: List[String],
                      sep: String ⇒ JStringBuilder): JStringBuilder =
       remainingPrefix match {
-        case NonTerminal(Named(name), _) :: tail =>          rec(tail, name :: names, sep)
-        case NonTerminal(RuleCall, _) :: tail =>          sep(" ").append('/').append(render(names)).append("/ ")
+        case NonTerminal(Named(name), _) :: tail => rec(tail, name :: names, sep)
+        case NonTerminal(RuleCall, _) :: tail =>
+          sep(" ").append('/').append(render(names)).append("/ ")
           rec(tail, Nil, dontSep)
-        case NonTerminal(Sequence, _) :: tail if names.isEmpty =>          rec(tail, Nil, sep)
-        case NonTerminal(Sequence, _) :: tail =>          sep(" / ").append(render(names))
+        case NonTerminal(Sequence, _) :: tail if names.isEmpty => rec(tail, Nil, sep)
+        case NonTerminal(Sequence, _) :: tail =>
+          sep(" / ").append(render(names))
           rec(tail, Nil, doSep)
-        case x :: tail =>          sep(" / ").append(render(names, ":")).append(formatNonTerminal(x))
+        case x :: tail =>
+          sep(" / ").append(render(names, ":")).append(formatNonTerminal(x))
           rec(tail, Nil, doSep)
-        case Nil =>          sep(" / ").append(render(names, ":")).append(formatTerminal(trace.terminal))
+        case Nil => sep(" / ").append(render(names, ":")).append(formatTerminal(trace.terminal))
       }
     rec(trace.prefix, Nil, dontSep)
     if (sb.length > traceCutOff) "..." + sb.substring(math.max(sb.length - traceCutOff - 3, 0)) else sb.toString

@@ -128,7 +128,8 @@ private[http4s] object CharPredicate {
     implicit def fromString(chars: String): ApplyMagnet = fromChars(chars)
     implicit def fromChars(chars: Seq[Char]): ApplyMagnet =
       chars match {
-        case _ if chars.size < 128 & !chars.exists(unmaskable) =>          @tailrec def rec(ix: Int, result: CharPredicate): CharPredicate =
+        case _ if chars.size < 128 & !chars.exists(unmaskable) =>
+          @tailrec def rec(ix: Int, result: CharPredicate): CharPredicate =
             if (ix == chars.length) result else rec(ix + 1, result ++ chars(ix))
           new ApplyMagnet(rec(0, Empty))
         case r: NumericRange[Char] ⇒ new ApplyMagnet(new RangeBased(r))
