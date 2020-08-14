@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 org.http4s
+ * Copyright 2009-2020 org.http4s
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ object CutSpec extends TestParserSpec {
 
     "The `~!~` (cut) operator" - {
       "work as expected" - new TestParser0 {
-        def targetRule = rule { foo ~ EOI }
-        def foo        = rule { "abc" | "a" ~!~ "de" | "axy" }
+        def targetRule = rule(foo ~ EOI)
+        def foo        = rule("abc" | "a" ~!~ "de" | "axy")
 
         "abc" must beMatched
         "ade" must beMatched

@@ -1,11 +1,4 @@
-This is an internal fork of [parboiled2] for http4s in order to let
-users bring their own [shapeless].
-
-[parboiled2]: https://github.com/sirthias/parboiled2
-[shapeless]: https://github.com/milessabin/shapeless
-
-# parboiled2
-
+# PARBOILED2 DOCUMENTATION
  A Macro-Based PEG Parser Generator for Scala 2.12+
 
 [image](https://travis-ci.org/sirthias/parboiled2.svg?branch=release-2.1)<br>
@@ -1282,4 +1275,3 @@ and its codebase would look a lot more messy.
 ## License
 
 *parboiled2* is released under the [Apache License 2.0](http://en.wikipedia.org/wiki/Apache_license)
-
